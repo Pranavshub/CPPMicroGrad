@@ -105,6 +105,27 @@ Value* Neuron::operator()(std::vector<Value>& x){
     return act;
 }
 
+// Neuron operator method
+Value* Neuron::operator()(std::vector<Value*>& x){
+    std::vector<Value*> w = this->getW(); // Do math with pointers instead
+    Value* b = this->getB();
+
+    // W * X + b
+    Value* act = new Value(0.0); // Allocated onto the heap
+    act->setLabel("act"); 
+
+    for(int i = 0; i < w.size(); ++i){
+        Value* product = new Value(*w[i] * (*x[i])); // Allocate new memory for each product on the heap
+        product->setLabel(w[i]->getLabel() + "*" + (*x[i]).getLabel()); // Create new Label for product
+        *act += *product; // IS THE SOLUTION *
+    }
+    *act += *b;
+    act->tanh(); // Might switch to ReLU or Sigmoid later
+
+    //std::cout << act->getLabel() << " Address (IN NEURON OEPRATOR): " << act << std::endl;
+    return act;
+}
+
 // Method to print parameter data and gradients
 void Neuron::testPrint() {
     for(Value* weight : w){

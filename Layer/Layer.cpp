@@ -18,51 +18,26 @@ Layer::Layer(int nin, int nout) {
         neurons.push_back(neuron);
     }
 }
-/*
-// NEED TO FIGURE THIS SHIT OUT
-// Operator method for Layer
-std::vector<Value*> Layer::operator()(std::vector<Value> x){
-    //std::vector<Value> activations;
+
+
+
+// Fixed operator method for Layer
+std::vector<Value*> Layer::operator()(std::vector<Value*> x){
     std::vector<Value*> activationPtrs;
     for (Neuron* neuron : getNeurons()) {
-        Value* actPtr = (*neuron)(x); // Allocate new Value object on the heap
-        //Value act = (*neuron)(x); // Call neuron using input vector
-        //Value* actPtr = &act;
-        //activations.push_back(act);
-
-        activationPtrs.push_back(actPtr);
-        
-        //std::cout << activationPtrs.back()->getLabel() << " Address (IN LAYER OEPRATOR): " << activationPtrs.back() << std::endl;
-
-    }
-
-
-    //for(int i = 0; i < activationPtrs.size(); ++i){  
-        //std::cout << activationPtrs[i]->getLabel() << " Address (IN LAYER OP): " << activationPtrs[i] << std::endl; //
-    //}
-
-
-    return activationPtrs;
-}
-*/
-
-// NEED TO FIGURE THIS SHIT OUT
-// Operator method for Layer
-std::vector<Value*> Layer::operator()(std::vector<Value> x){
-    std::vector<Value*> activationPtrs;
-    for (Neuron* neuron : getNeurons()) {
-        Value * act = (*neuron)(x);
-        act->backward();
-        
+        Value* act = (*neuron)(x);        
         activationPtrs.push_back(act);
     }
+    //std::cout << "A)GIPJSOFHWIP:GHEP:OGHE){}" << std::endl;
     return activationPtrs;
 }
 
+
+/*
 std::vector<Value**> Layer::getActivations(std::vector<Value> x){
     std::vector<Value**> activationPtrs;
     for (Neuron* neuron : getNeurons()) {
-        Value * act = (*neuron)(x);
+        Value* act = (*neuron)(x);
         //act->backward();
 
         Value** actPtr = new Value*(act);
@@ -83,29 +58,22 @@ std::vector<Value**> Layer::getActivations(std::vector<Value> x){
     return activationPtrs;
 }
 
-
-/*
-// Neuron operator method
-Value Neuron::operator()(std::vector<Value>& x){
-    std::vector<Value*> w = this->getPointers(); // Do math with pointers instead
-    Value* bPtr = this->getBPointer();
-
-    // W * X + b
-    Value act(0.0);
-    act.setLabel("act");
-
-    for(int i = 0; i < w.size(); ++i){
-        Value* product = new Value(*w[i] * x[i]); // Allocate new memory for each product on the heap
-        product->setLabel(w[i]->getLabel() + "*" + x[i].getLabel()); // Create new Label for product
-        act += *product; // IS THE SOLUTION *
+// Alternative activation function, for testing purposes
+// This works, rewrite this as the main operator function for the layer
+// The fix seems to be passing the input as a set of pointers, which point to Value objects
+// that have been allocated onto the heap. 
+std::vector<Value*> Layer::getActivations(std::vector<Value*> x){
+    std::vector<Value*> activationPtrs;
+    for (Neuron* neuron : getNeurons()) {
+        Value* act = (*neuron)(x);        
+        activationPtrs.push_back(act);
     }
-    act += *bPtr;
-    act.tanh(); // Might switch to ReLU or Sigmoid later
-    return act;
-
+    //std::cout << "A)GIPJSOFHWIP:GHEP:OGHE){}" << std::endl;
+    return activationPtrs;
 }
-
 */
+
+
 
 std::vector<Neuron*> Layer::getNeurons() {
     std::vector<Neuron*> neuronPointers;

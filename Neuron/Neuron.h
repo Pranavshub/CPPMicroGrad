@@ -28,6 +28,8 @@ public:
 
     // __call__ method
     Value* operator()(std::vector<Value>& x); //*
+    Value* operator()(std::vector<Value*>& x); //*
+
 
     // Test print method
     void testPrint(); //*

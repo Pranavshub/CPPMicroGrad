@@ -1,8 +1,9 @@
 // MLP.cpp
-#include "MLP.h"
-#include "Layer.h"
-#include "Neuron.h"
-#include "Value.h"
+#include "../Value/Value.h"
+#include "../Neuron/Neuron.h"
+#include "../Layer/Layer.h"
+#include "../MLP/MLP.h"
+
 
 #include <iostream>
 #include <vector>
@@ -23,31 +24,46 @@ MLP::MLP(int nin, std::vector<int> nouts) {
     }
 }
 
+
 // Operator method for MLP
-std::vector<Value> MLP::operator()(const std::vector<Value>& x) const{
-    std::vector<Value> temp = x;
-    for (const Layer& layer : layers) {
-        temp = layer(temp);
-    }
-    
-    return temp;
-}
+std::vector<Value*> MLP::operator()(const std::vector<Value*>& x) {
+    std::vector<Value*> activations = x;
 
-// Getter method for all layers in the MLP
-std::vector<Layer> MLP::getLayers(){
-    return layers;
-}
+    //std::cout << "# of Layers: " << getLayers().size() << std::endl;
 
-// Getter method for all parameter Values in the MLP
-std::vector<Value> MLP::parameters() const{
-    std::vector<Value> params;
-    for(const Layer& layer : layers){
-        for(const Value& value : layer.parameters()){
-            params.push_back(value);
+    // Get the activations of each layer
+    int count = 1;
+    for (Layer* layer : getLayers()) {
+        activations = (*layer)(activations);
+        
+        // WILL COMMENT THIS LATER, THIS IS MEANT FOR TESTING PURPOSES
+        if(count != getLayers().size()){
+            for(Value* val : activations){
+                val-> setLabel("Layer#" + std::to_string(count) + "output");
+            }
         }
+
+        ++count;
     }
-    return params;
+
+
+    return activations;
 }
+
+// Getter method for the layers field
+std::vector<Layer*> MLP::getLayers() {
+    std::vector<Layer*> layerPointers;
+
+    for (Layer& layer : layers) {
+        //std::cout << "Neuron Address: " << &neuron << std::endl;
+        Layer* ptr = &layer;
+        layerPointers.push_back(ptr);
+    }
+
+    return layerPointers;  
+
+}
+
 
 // Check and see if this works and then check if you have call .backward() on the results of this function.
 // Mean Squared Error Loss Function
